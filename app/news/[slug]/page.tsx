@@ -7,6 +7,7 @@ import pool from "@/lib/db";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getArticleCover } from "@/lib/covers";
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 
 function formatDate(d: unknown): string {
   if (typeof d === "string") return d.slice(0, 10);
@@ -43,10 +44,22 @@ export async function generateMetadata({
   const articles = rows as Article[];
   if (articles.length === 0) return { title: "文章不存在 - AI百事通" };
   const article = articles[0];
+  const cover = getArticleCover(article.slug, undefined, article.title);
   return {
     title: article.meta_title || `${article.title} | AI百事通`,
     description:
       article.meta_description || article.excerpt || article.title,
+    alternates: {
+      canonical: `https://bs.aiv.yn.cn/news/${params.slug}`,
+    },
+    openGraph: {
+      title: article.title,
+      description: article.meta_description || article.excerpt || article.title,
+      url: `https://bs.aiv.yn.cn/news/${params.slug}`,
+      type: "article",
+      publishedTime: article.published_at,
+      images: [{ url: cover, width: 800, height: 400 }],
+    },
   };
 }
 
@@ -97,6 +110,20 @@ export default async function NewsDetailPage({
 
   return (
     <div className="page-container">
+      <ArticleJsonLd
+        title={article.title}
+        description={article.excerpt || article.title}
+        url={`https://bs.aiv.yn.cn/news/${article.slug}`}
+        image={getArticleCover(article.slug, article.cover, article.title)}
+        datePublished={article.published_at}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "首页", url: "https://bs.aiv.yn.cn" },
+          { name: "AI资讯", url: "https://bs.aiv.yn.cn/news" },
+          { name: article.title, url: `https://bs.aiv.yn.cn/news/${article.slug}` },
+        ]}
+      />
       {/* 返回链接 */}
       <div className="breadcrumb">
         <Link href="/">首页</Link>

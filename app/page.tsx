@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import pool from "@/lib/db";
 import { getArticleCover } from "@/lib/covers";
+import { WebsiteJsonLd } from "@/components/JsonLd";
 
 const AVATAR_COLORS = [
   "#2563eb", "#dc2626", "#059669", "#d97706",
@@ -93,6 +94,7 @@ export default async function HomePage() {
 
   return (
     <div>
+      <WebsiteJsonLd />
       {/* Hero */}
       <section className="hero-section">
         <h1>AI百事通</h1>
