@@ -35,6 +35,12 @@ interface Tool {
   is_new: number;
 }
 
+const hotSearches = [
+  "ChatGPT", "Claude", "Midjourney", "Cursor",
+  "DeepSeek", "豆包", "Kimi", "写作",
+  "编程", "绘画", "免费", "国产",
+];
+
 export default async function SearchPage({
   searchParams,
 }: {
@@ -42,6 +48,7 @@ export default async function SearchPage({
 }) {
   const query = (searchParams.q || "").trim();
   let tools: Tool[] = [];
+  let hotTools: Tool[] = [];
 
   if (query) {
     const [rows] = await pool.query(
@@ -49,6 +56,14 @@ export default async function SearchPage({
       [`%${query}%`, `%${query}%`]
     );
     tools = rows as Tool[];
+  }
+
+  // 热门推荐工具（无搜索时展示）
+  if (!query) {
+    const [hotRows] = await pool.query(
+      "SELECT id, name, slug, description, price_type, has_chinese, rating, is_hot, is_new FROM tools WHERE status = 'active' AND is_hot = 1 ORDER BY rating DESC LIMIT 6"
+    );
+    hotTools = hotRows as Tool[];
   }
 
   return (
@@ -59,30 +74,72 @@ export default async function SearchPage({
       <form
         action="/search"
         method="GET"
-        style={{
-          maxWidth: 600,
-          marginBottom: 32,
-        }}
+        style={{ maxWidth: 600, margin: "0 auto 24px" }}
       >
-        <div className="search-box" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+        <div
+          className="search-box"
+          style={{
+            boxShadow: "0 2px 12px rgba(37,99,235,0.15)",
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+        >
           <input
             type="text"
             name="q"
             placeholder="输入工具名称或关键词..."
             defaultValue={query}
             autoComplete="off"
+            autoFocus
           />
           <button type="submit">搜索</button>
         </div>
       </form>
 
-      {/* 结果 */}
+      {/* 热门搜索标签 */}
+      <div
+        style={{
+          maxWidth: 600,
+          margin: "0 auto 32px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 8,
+          justifyContent: "center",
+        }}
+      >
+        {hotSearches.map((tag) => (
+          <Link
+            key={tag}
+            href={`/search?q=${encodeURIComponent(tag)}`}
+            style={{
+              padding: "6px 14px",
+              borderRadius: 20,
+              fontSize: "0.85rem",
+              background: query === tag ? "#2563eb" : "#f1f5f9",
+              color: query === tag ? "white" : "#475569",
+              textDecoration: "none",
+              transition: "all 0.2s",
+            }}
+          >
+            {tag}
+          </Link>
+        ))}
+      </div>
+
+      {/* 搜索结果 */}
       {query ? (
         <>
-          <p style={{ color: "#64748b", marginBottom: 20, fontSize: "0.95rem" }}>
+          <p
+            style={{
+              color: "#64748b",
+              marginBottom: 20,
+              fontSize: "0.95rem",
+              textAlign: "center",
+            }}
+          >
             {tools.length > 0
-              ? `找到 ${tools.length} 个与"${query}"相关的工具`
-              : `未找到与"${query}"相关的工具`}
+              ? `找到 ${tools.length} 个与「${query}」相关的工具`
+              : `未找到与「${query}」相关的工具`}
           </p>
 
           {tools.length > 0 ? (
@@ -134,16 +191,102 @@ export default async function SearchPage({
               ))}
             </div>
           ) : (
-            <div className="empty-state">
-              <div className="icon">🔍</div>
-              <p>换个关键词试试？</p>
+            <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <div style={{ fontSize: "3rem", marginBottom: 16 }}>😅</div>
+              <p style={{ color: "#64748b", marginBottom: 24, fontSize: "1.05rem" }}>
+                没找到「{query}」相关的工具
+              </p>
+              <p style={{ color: "#94a3b8", fontSize: "0.9rem", marginBottom: 24 }}>
+                试试其他关键词，或者浏览下面的热门工具
+              </p>
+              {hotTools.length > 0 && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: 12,
+                    maxWidth: 900,
+                    margin: "0 auto",
+                    textAlign: "left",
+                  }}
+                >
+                  {hotTools.map((tool) => (
+                    <Link
+                      key={tool.id}
+                      href={`/tool/${tool.slug}`}
+                      className="tool-card"
+                    >
+                      <div
+                        className="tool-avatar"
+                        style={{ background: getAvatarColor(tool.name) }}
+                      >
+                        {tool.name.charAt(0)}
+                      </div>
+                      <div className="tool-info">
+                        <h3>{tool.name}</h3>
+                        <p>{tool.description}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </>
       ) : (
-        <div className="empty-state">
-          <div className="icon">💡</div>
-          <p>输入关键词开始搜索</p>
+        /* 无搜索时展示热门推荐 */
+        <div style={{ textAlign: "center" }}>
+          {hotTools.length > 0 && (
+            <>
+              <h2
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  color: "#334155",
+                  marginBottom: 20,
+                }}
+              >
+                🔥 热门推荐
+              </h2>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                  gap: 12,
+                  maxWidth: 900,
+                  margin: "0 auto",
+                  textAlign: "left",
+                }}
+              >
+                {hotTools.map((tool) => (
+                  <Link
+                    key={tool.id}
+                    href={`/tool/${tool.slug}`}
+                    className="tool-card"
+                  >
+                    <div
+                      className="tool-avatar"
+                      style={{ background: getAvatarColor(tool.name) }}
+                    >
+                      {tool.name.charAt(0)}
+                    </div>
+                    <div className="tool-info">
+                      <h3>{tool.name}</h3>
+                      <p>{tool.description}</p>
+                      <div className="tool-tags">
+                        {tool.is_hot === 1 && (
+                          <span className="tag-hot">🔥 热门</span>
+                        )}
+                        {tool.rating > 0 && (
+                          <span className="tag-rating">⭐ {tool.rating}</span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
