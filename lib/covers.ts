@@ -66,6 +66,7 @@ const keywordBrandRules: { keywords: string[]; brands: string[] }[] = [
   { keywords: ['编程', 'coding', 'code', '代码'], brands: ['cursor', 'copilot'] },
   { keywords: ['绘画', 'art', '绘图', '图像生成'], brands: ['midjourney', 'stable-diffusion'] },
   { keywords: ['写作', 'writing', '文案'], brands: ['chatgpt', 'claude'] },
+  { keywords: ['国产', '国内', '中文', '中国'], brands: ['deepseek', 'kimi', 'doubao'] },
   { keywords: ['工具', 'tool', '推荐', '盘点'], brands: ['openai', 'claude', 'midjourney'] },
 ];
 
