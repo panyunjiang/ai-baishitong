@@ -83,35 +83,42 @@ export default async function ToolDetailPage({
 }: {
   params: { slug: string };
 }) {
-  let tool: Tool;
-  let category: Category | null = null;
-  let similarTools: SimilarTool[] = [];
-
+  let toolRows;
   try {
-    const [toolRows] = await pool.query(
+    [toolRows] = await pool.query(
       "SELECT * FROM tools WHERE slug = ? AND status = 'active'",
       [params.slug]
     );
-    const tools = toolRows as Tool[];
-    if (tools.length === 0) notFound();
-    tool = tools[0];
+  } catch {
+    notFound();
+  }
+  const tools = toolRows as Tool[];
+  if (tools.length === 0) notFound();
+  const tool = tools[0];
 
-    // 获取分类信息
+  // 获取分类信息
+  let category: Category | null = null;
+  try {
     const [catRows] = await pool.query(
       "SELECT id, name, slug, icon FROM categories WHERE id = ?",
       [tool.category_id]
     );
     const categories = catRows as Category[];
     category = categories[0] || null;
+  } catch {
+    // ignore
+  }
 
-    // 获取类似工具
+  // 获取类似工具
+  let similarTools: SimilarTool[] = [];
+  try {
     const [similarRows] = await pool.query(
       "SELECT id, name, slug, description, price_type, has_chinese, rating, is_hot, is_new FROM tools WHERE category_id = ? AND id != ? AND status = 'active' ORDER BY rating DESC LIMIT 4",
       [tool.category_id, tool.id]
     );
     similarTools = similarRows as SimilarTool[];
   } catch {
-    notFound();
+    // ignore
   }
 
   // 解析features
