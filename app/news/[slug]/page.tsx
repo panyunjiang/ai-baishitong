@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import pool from "@/lib/db";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { getArticleCover } from "@/lib/covers";
 
 function formatDate(d: unknown): string {
   if (typeof d === "string") return d.slice(0, 10);
@@ -135,19 +136,17 @@ export default async function NewsDetailPage({
         </div>
 
         {/* 封面图 */}
-        {article.cover && (
-          <img
-            src={article.cover}
-            alt={article.title}
-            style={{
-              width: "100%",
-              maxHeight: 400,
-              objectFit: "cover",
-              borderRadius: 8,
-              marginBottom: 24,
-            }}
-          />
-        )}
+        <img
+          src={getArticleCover(article.slug, article.cover, article.title)}
+          alt={article.title}
+          style={{
+            width: "100%",
+            maxHeight: 400,
+            objectFit: "cover",
+            borderRadius: 8,
+            marginBottom: 24,
+          }}
+        />
 
         {/* 标签 */}
         {tags.length > 0 && (
@@ -217,27 +216,11 @@ export default async function NewsDetailPage({
                 href={`/news/${a.slug}`}
                 className="news-card"
               >
-                {a.cover ? (
-                  <img
-                    src={a.cover}
-                    alt={a.title}
-                    className="cover"
-                  />
-                ) : (
-                  <div
-                    className="cover"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "2rem",
-                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      color: "white",
-                    }}
-                  >
-                    🤖
-                  </div>
-                )}
+                <img
+                  src={getArticleCover(a.slug, a.cover, a.title)}
+                  alt={a.title}
+                  className="cover"
+                />
                 <div className="content">
                   <h3>{a.title}</h3>
                   <p>{a.excerpt}</p>

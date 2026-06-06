@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import type { Metadata } from "next";
 import pool from "@/lib/db";
+import { getArticleCover } from "@/lib/covers";
 
 export const metadata: Metadata = {
   title: "AI资讯 - 最新AI行业动态 | AI百事通",
@@ -60,27 +61,11 @@ export default async function NewsPage({
               href={`/news/${article.slug}`}
               className="news-card"
             >
-              {article.cover ? (
-                <img
-                  src={article.cover}
-                  alt={article.title}
-                  className="cover"
-                />
-              ) : (
-                <div
-                  className="cover"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "2rem",
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    color: "white",
-                  }}
-                >
-                  🤖
-                </div>
-              )}
+              <img
+                src={getArticleCover(article.slug, article.cover, article.title)}
+                alt={article.title}
+                className="cover"
+              />
               <div className="content">
                 <h3>{article.title}</h3>
                 <p>{article.excerpt}</p>
