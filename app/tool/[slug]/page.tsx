@@ -83,53 +83,41 @@ export default async function ToolDetailPage({
 }: {
   params: { slug: string };
 }) {
-  let toolRows;
-  try {
-    [toolRows] = await pool.query(
-      "SELECT id, name, slug, description, features, website, price_type, price_info, has_chinese, rating, is_hot, is_new, is_featured, meta_title, meta_description, category_id FROM tools WHERE slug = ? AND status = 'active'",
-      [params.slug]
-    );
-  } catch {
-    notFound();
-  }
+  const [toolRows] = await pool.query(
+    "SELECT id, name, slug, description, features, website, price_type, price_info, has_chinese, rating, is_hot, is_new, is_featured, meta_title, meta_description, category_id FROM tools WHERE slug = ? AND status = 'active'",
+    [params.slug]
+  );
   const tools = toolRows as Tool[];
   if (tools.length === 0) notFound();
   const tool = tools[0];
 
   // 获取分类信息
-  let category: Category | null = null;
-  try {
-    const [catRows] = await pool.query(
-      "SELECT id, name, slug, icon FROM categories WHERE id = ?",
-      [tool.category_id]
-    );
-    const categories = catRows as Category[];
-    category = categories[0] || null;
-  } catch {
-    // ignore
-  }
+  const [catRows] = await pool.query(
+    "SELECT id, name, slug, icon FROM categories WHERE id = ?",
+    [tool.category_id]
+  );
+  const categories = catRows as Category[];
+  const category = categories[0] || null;
 
   // 获取类似工具
-  let similarTools: SimilarTool[] = [];
-  try {
-    const [similarRows] = await pool.query(
-      "SELECT id, name, slug, description, price_type, has_chinese, rating, is_hot, is_new FROM tools WHERE category_id = ? AND id != ? AND status = 'active' ORDER BY rating DESC LIMIT 4",
-      [tool.category_id, tool.id]
-    );
-    similarTools = similarRows as SimilarTool[];
-  } catch {
-    // ignore
-  }
+  const [similarRows] = await pool.query(
+    "SELECT id, name, slug, description, price_type, has_chinese, rating, is_hot, is_new FROM tools WHERE category_id = ? AND id != ? AND status = 'active' ORDER BY rating DESC LIMIT 4",
+    [tool.category_id, tool.id]
+  );
+  const similarTools = similarRows as SimilarTool[];
 
   // 解析features
   let features: string[] = [];
-  if (tool.features) {
+  if (tool.features && typeof tool.features === 'string') {
     try {
       const parsed = JSON.parse(tool.features);
       if (Array.isArray(parsed)) features = parsed;
     } catch {
-      // 如果不是JSON，按换行分割
-      features = tool.features.split("\n").filter((f: string) => f.trim());
+      try {
+        features = tool.features.split("\n").filter((f: string) => f.trim());
+      } catch {
+        features = [];
+      }
     }
   }
 
