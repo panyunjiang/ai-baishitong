@@ -3,6 +3,17 @@ import pool from "@/lib/db";
 
 const BASE_URL = "https://bs.aiv.yn.cn";
 
+function toISODate(d: unknown): string {
+  if (!d) return new Date().toISOString();
+  if (d instanceof Date) return d.toISOString();
+  if (typeof d === "string") {
+    // 处理 "2026-06-05 14:35:05" 格式
+    const date = new Date(d.replace(" ", "T") + "Z");
+    if (!isNaN(date.getTime())) return date.toISOString();
+  }
+  return new Date().toISOString();
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date().toISOString();
 
@@ -21,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
     const tools = (toolRows as { slug: string; updated_at: string }[]).map((t) => ({
       url: `${BASE_URL}/tool/${t.slug}`,
-      lastModified: t.updated_at || now,
+      lastModified: toISODate(t.updated_at),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }));
@@ -41,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
     const articles = (articleRows as { slug: string; published_at: string }[]).map((a) => ({
       url: `${BASE_URL}/news/${a.slug}`,
-      lastModified: a.published_at || now,
+      lastModified: toISODate(a.published_at),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     }));
