@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import Link from "next/link";
 import pool from "@/lib/db";
+import { getArticleCover } from "@/lib/covers";
 
 const AVATAR_COLORS = [
   "#2563eb", "#dc2626", "#059669", "#d97706",
@@ -201,26 +202,11 @@ export default async function HomePage() {
                   href={`/news/${article.slug}`}
                   className="news-card"
                 >
-                  {article.cover ? (
-                    <img
-                      src={article.cover}
-                      alt={article.title}
-                      className="cover"
-                    />
-                  ) : (
-                    <div
-                      className="cover"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "2rem",
-                        background: "#e2e8f0",
-                      }}
-                    >
-                      📰
-                    </div>
-                  )}
+                  <img
+                    src={getArticleCover(article.slug, article.cover, article.title)}
+                    alt={article.title}
+                    className="cover"
+                  />
                   <div className="content">
                     <h3>{article.title}</h3>
                     <p>{article.excerpt}</p>
