@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -48,6 +49,18 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body style={{ background: "#f5f7fa" }}>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-V1YTS2NNQW"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-V1YTS2NNQW');
+          `}
+        </Script>
         <Header />
         <main>{children}</main>
         <Footer />
