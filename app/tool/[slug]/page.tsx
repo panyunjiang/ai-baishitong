@@ -86,7 +86,7 @@ export default async function ToolDetailPage({
   let toolRows;
   try {
     [toolRows] = await pool.query(
-      "SELECT * FROM tools WHERE slug = ? AND status = 'active'",
+      "SELECT id, name, slug, description, features, website, price_type, price_info, has_chinese, rating, is_hot, is_new, is_featured, meta_title, meta_description, category_id FROM tools WHERE slug = ? AND status = 'active'",
       [params.slug]
     );
   } catch {
