@@ -74,10 +74,11 @@ export default async function NewsPage({
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "2rem",
-                    background: "#e2e8f0",
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    color: "white",
                   }}
                 >
-                  📰
+                  🤖
                 </div>
               )}
               <div className="content">

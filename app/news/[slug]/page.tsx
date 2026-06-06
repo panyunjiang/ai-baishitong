@@ -176,10 +176,10 @@ export default async function NewsDetailPage({
           </div>
         )}
 
-        {/* Markdown内容 */}
+        {/* Markdown内容 - 去掉开头的标题避免与上方h1重复 */}
         <div className="article-content">
           <Markdown remarkPlugins={[remarkGfm]}>
-            {article.content || ""}
+            {(article.content || "").replace(/^#[^#].*\n?/, "").trim()}
           </Markdown>
         </div>
 
@@ -231,10 +231,11 @@ export default async function NewsDetailPage({
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: "2rem",
-                      background: "#e2e8f0",
+                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      color: "white",
                     }}
                   >
-                    📰
+                    🤖
                   </div>
                 )}
                 <div className="content">
