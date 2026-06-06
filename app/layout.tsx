@@ -33,6 +33,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    other: {
+      'baidu-site-verification': 'codeva-fsVfMkumjC',
+    },
+  },
 };
 
 export default function RootLayout({
@@ -42,9 +47,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <head>
-        <meta name="baidu-site-verification" content="codeva-fsVfMkumjC" />
-      </head>
       <body style={{ background: "#f5f7fa" }}>
         <Header />
         <main>{children}</main>
