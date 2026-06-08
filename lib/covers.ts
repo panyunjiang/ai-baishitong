@@ -4,28 +4,28 @@
  */
 
 const slugCovers: Record<string, string> = {
-  'top-5-ai-agent-frameworks-2025': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop',
-  'claude-4-anthropic-reasoning-model-2025': 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&h=400&fit=crop',
-  'rag-vector-database-enterprise-knowledge-base-2025': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=400&fit=crop',
-  'ai-art-beginners-guide': 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800&h=400&fit=crop',
-  'best-ai-tools-2026': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=400&fit=crop',
-  'best-chinese-ai-tools-2026': 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=400&fit=crop',
-  'best-ai-coding-tools-2026': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop',
-  'ai-writing-tools-comparison': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&h=400&fit=crop',
+  'top-5-ai-agent-frameworks-2025': 'https://picsum.photos/seed/agent-fw/800/400',
+  'claude-4-anthropic-reasoning-model-2025': 'https://picsum.photos/seed/claude4/800/400',
+  'rag-vector-database-enterprise-knowledge-base-2025': 'https://picsum.photos/seed/rag-db/800/400',
+  'ai-art-beginners-guide': 'https://picsum.photos/seed/ai-art/800/400',
+  'best-ai-tools-2026': 'https://picsum.photos/seed/ai-tools/800/400',
+  'best-chinese-ai-tools-2026': 'https://picsum.photos/seed/cn-tools/800/400',
+  'best-ai-coding-tools-2026': 'https://picsum.photos/seed/code-tools/800/400',
+  'ai-writing-tools-comparison': 'https://picsum.photos/seed/ai-write/800/400',
 };
 
 const keywordRules: { keywords: string[]; cover: string }[] = [
-  { keywords: ['agent', '框架', 'framework'], cover: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop' },
-  { keywords: ['claude', 'anthropic', '推理', 'reasoning'], cover: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&h=400&fit=crop' },
-  { keywords: ['rag', '向量', 'vector', '知识库', 'database'], cover: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=400&fit=crop' },
-  { keywords: ['绘画', 'art', '绘图', 'midjourney', 'stable diffusion', 'image'], cover: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800&h=400&fit=crop' },
-  { keywords: ['编码', 'coding', 'code', '编程', 'cursor', 'copilot'], cover: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop' },
-  { keywords: ['写作', 'writing', '文案', 'content'], cover: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&h=400&fit=crop' },
-  { keywords: ['chatgpt', 'openai', 'gpt', '对话', 'chat'], cover: 'https://images.unsplash.com/photo-1676299081847-824916de0307?w=800&h=400&fit=crop' },
-  { keywords: ['tool', '工具', '推荐', '盘点'], cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=400&fit=crop' },
+  { keywords: ['agent', '框架', 'framework'], cover: 'https://picsum.photos/seed/agent2/800/400' },
+  { keywords: ['claude', 'anthropic', '推理', 'reasoning'], cover: 'https://picsum.photos/seed/claude2/800/400' },
+  { keywords: ['rag', '向量', 'vector', '知识库', 'database'], cover: 'https://picsum.photos/seed/rag2/800/400' },
+  { keywords: ['绘画', 'art', '绘图', 'midjourney', 'stable diffusion', 'image'], cover: 'https://picsum.photos/seed/art2/800/400' },
+  { keywords: ['编码', 'coding', 'code', '编程', 'cursor', 'copilot'], cover: 'https://picsum.photos/seed/code2/800/400' },
+  { keywords: ['写作', 'writing', '文案', 'content'], cover: 'https://picsum.photos/seed/write2/800/400' },
+  { keywords: ['chatgpt', 'openai', 'gpt', '对话', 'chat'], cover: 'https://picsum.photos/seed/gpt2/800/400' },
+  { keywords: ['tool', '工具', '推荐', '盘点'], cover: 'https://picsum.photos/seed/tool2/800/400' },
 ];
 
-const defaultCover = 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop';
+const defaultCover = 'https://picsum.photos/seed/aibst/800/400';
 
 export function getArticleCover(slug: string, dbCover?: string | null, title?: string): string {
   if (dbCover) return dbCover;
@@ -40,5 +40,10 @@ export function getArticleCover(slug: string, dbCover?: string | null, title?: s
     }
   }
 
-  return defaultCover;
+  // 基于slug生成稳定的随机封面
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return `https://picsum.photos/seed/${Math.abs(hash)}/800/400`;
 }

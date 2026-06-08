@@ -1,9 +1,11 @@
 export const dynamic = 'force-dynamic';
 
 import Link from "next/link";
+import { Fragment } from "react";
 import type { Metadata } from "next";
 import pool from "@/lib/db";
 import { getArticleCover } from "@/lib/covers";
+import CoverImage from "@/components/CoverImage";
 
 export const metadata: Metadata = {
   title: "AI资讯 - 最新AI行业动态 | AI百事通",
@@ -61,7 +63,7 @@ export default async function NewsPage({
               href={`/news/${article.slug}`}
               className="news-card"
             >
-              <img
+              <CoverImage
                 src={getArticleCover(article.slug, article.cover, article.title)}
                 alt={article.title}
                 className="cover"
@@ -116,9 +118,9 @@ export default async function NewsPage({
                 p === 1 || p === totalPages || Math.abs(p - page) <= 2
             )
             .map((p, idx, arr) => (
-              <span key={p}>
+              <Fragment key={p}>
                 {idx > 0 && arr[idx - 1] !== p - 1 && (
-                  <span style={{ padding: "8px 4px", color: "#94a3b8" }}>
+                  <span style={{ padding: "8px 4px", color: "#94a3b8", border: "none" }}>
                     ...
                   </span>
                 )}
@@ -127,7 +129,7 @@ export default async function NewsPage({
                 ) : (
                   <Link href={`/news?page=${p}`}>{p}</Link>
                 )}
-              </span>
+              </Fragment>
             ))}
           {page < totalPages && (
             <Link href={`/news?page=${page + 1}`}>下一页 →</Link>

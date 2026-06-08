@@ -4,6 +4,7 @@ import Link from "next/link";
 import pool from "@/lib/db";
 import { getArticleCover } from "@/lib/covers";
 import { WebsiteJsonLd } from "@/components/JsonLd";
+import CoverImage from "@/components/CoverImage";
 
 const AVATAR_COLORS = [
   "#2563eb", "#dc2626", "#059669", "#d97706",
@@ -204,7 +205,7 @@ export default async function HomePage() {
                   href={`/news/${article.slug}`}
                   className="news-card"
                 >
-                  <img
+                  <CoverImage
                     src={getArticleCover(article.slug, article.cover, article.title)}
                     alt={article.title}
                     className="cover"

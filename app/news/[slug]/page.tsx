@@ -8,6 +8,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getArticleCover } from "@/lib/covers";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
+import CoverImage from "@/components/CoverImage";
 
 function formatDate(d: unknown): string {
   if (typeof d === "string") return d.slice(0, 10);
@@ -163,16 +164,10 @@ export default async function NewsDetailPage({
         </div>
 
         {/* 封面图 */}
-        <img
+        <CoverImage
           src={getArticleCover(article.slug, article.cover, article.title)}
           alt={article.title}
-          style={{
-            width: "100%",
-            maxHeight: 400,
-            objectFit: "cover",
-            borderRadius: 8,
-            marginBottom: 24,
-          }}
+          className="detail-cover"
         />
 
         {/* 标签 */}
