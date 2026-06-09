@@ -39,7 +39,7 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const [rows] = await pool.query(
-    "SELECT meta_title, meta_description, title, excerpt FROM articles WHERE slug = ? AND status = 'published'",
+    "SELECT slug, meta_title, meta_description, title, excerpt FROM articles WHERE slug = ? AND status = 'published'",
     [params.slug]
   );
   const articles = rows as Article[];

@@ -29,6 +29,7 @@ const defaultCover = 'https://picsum.photos/seed/aibst/800/400';
 
 export function getArticleCover(slug: string, dbCover?: string | null, title?: string): string {
   if (dbCover) return dbCover;
+  if (!slug) return defaultCover;
   if (slugCovers[slug]) return slugCovers[slug];
 
   if (title) {
