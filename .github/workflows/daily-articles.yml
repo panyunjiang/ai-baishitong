@@ -1,0 +1,20 @@
+name: AI百事通 - 每日文章 (北京时间 6:00)
+
+on:
+  schedule:
+    # 每天北京时间 6:00 = UTC 22:00 (前一天)
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 触发每日文章生成
+        run: |
+          curl -X POST "https://bs.aiv.yn.cn/api/cron/daily-articles?secret=${{ secrets.CRON_SECRET }}" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            --max-time 300 \
+            -w "\nHTTP Status: %{http_code}"
+          echo ""
+          echo "✅ 每日文章生成请求已发送"

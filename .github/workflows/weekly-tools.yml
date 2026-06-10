@@ -1,0 +1,20 @@
+name: AI百事通 - 每周工具 (周一 10:00)
+
+on:
+  schedule:
+    # 每周一北京时间 10:00 = UTC 02:00 Monday
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 触发每周工具推荐
+        run: |
+          curl -X POST "https://bs.aiv.yn.cn/api/cron/weekly-tools?secret=${{ secrets.CRON_SECRET }}" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            --max-time 300 \
+            -w "\nHTTP Status: %{http_code}"
+          echo ""
+          echo "✅ 每周工具推荐生成请求已发送"
