@@ -14,7 +14,8 @@
     "react-dom": "^18.3.1",
     "mysql2": "^3.14.1",
     "react-markdown": "^9.0.3",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "openai": "^4.85.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
